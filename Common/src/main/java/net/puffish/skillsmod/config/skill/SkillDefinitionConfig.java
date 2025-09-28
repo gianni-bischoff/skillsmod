@@ -30,7 +30,8 @@ public record SkillDefinitionConfig(
 		int requiredSkills,
 		int requiredPoints,
 		int requiredSpentPoints,
-		int requiredExclusions
+		int requiredExclusions,
+        Text requiredStages
 ) {
 
 	public static Result<Optional<SkillDefinitionConfig>, Problem> parse(String id, JsonElement rootElement, ConfigContext context) {
@@ -107,6 +108,11 @@ public record SkillDefinitionConfig(
 				)
 				.orElse(1);
 
+        var requiredStages = rootObject.get("required_stages")
+                .andThen(titleElement -> BuiltinJson.parseText(titleElement, context.getServer().getRegistryManager()))
+                .ifFailure(problems::add)
+                .getSuccess();
+
 		var requiredPoints = rootObject.get("required_points")
 				.getSuccess() // ignore failure because this property is optional
 				.flatMap(element -> element.getAsInt()
@@ -162,7 +168,8 @@ public record SkillDefinitionConfig(
 					requiredSkills,
 					requiredPoints,
 					requiredSpentPoints,
-					requiredExclusions
+					requiredExclusions,
+                    requiredStages.orElseThrow()
 			)));
 		} else {
 			return Result.failure(Problem.combine(problems));

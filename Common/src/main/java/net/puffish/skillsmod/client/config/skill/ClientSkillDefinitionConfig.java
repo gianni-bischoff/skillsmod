@@ -14,6 +14,7 @@ public record ClientSkillDefinitionConfig(
 		float size,
 		int cost,
 		int requiredSkills,
+		Text requiredStages,
 		int requiredPoints,
 		int requiredSpentPoints,
 		int requiredExclusions

@@ -115,6 +115,7 @@ public class ShowCategoryInPacket implements InPacket {
 		var size = buf.readFloat();
 		var cost = buf.readInt();
 		var requiredSkills = buf.readInt();
+		var requiredStages = TextCodecs.UNLIMITED_REGISTRY_PACKET_CODEC.decode(buf);
 		var requiredPoints = buf.readInt();
 		var requiredSpentPoints = buf.readInt();
 		var requiredExclusions = buf.readInt();
@@ -129,6 +130,7 @@ public class ShowCategoryInPacket implements InPacket {
 				size,
 				cost,
 				requiredSkills,
+				requiredStages,
 				requiredPoints,
 				requiredSpentPoints,
 				requiredExclusions
