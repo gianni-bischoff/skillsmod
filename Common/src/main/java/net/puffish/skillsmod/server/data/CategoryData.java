@@ -96,7 +96,8 @@ public class CategoryData {
 		}
 
         if (!definition.requiredStages().getString().isBlank()) {
-			return Skill.State.LOCKED;
+
+			return Skill.State.BLOCKED;
 		}
 
 		if (category.connections()
