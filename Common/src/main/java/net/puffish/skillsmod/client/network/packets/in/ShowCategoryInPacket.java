@@ -115,7 +115,9 @@ public class ShowCategoryInPacket implements InPacket {
 		var size = buf.readFloat();
 		var cost = buf.readInt();
 		var requiredSkills = buf.readInt();
-		var costItem = ItemStack.PACKET_CODEC.decode(buf);
+		// Read optional cost item (may be empty)
+		var _hasCostItem = buf.readBoolean();
+		var costItem = _hasCostItem ? ItemStack.PACKET_CODEC.decode(buf) : ItemStack.EMPTY;
 		var requiredPoints = buf.readInt();
 		var requiredSpentPoints = buf.readInt();
 		var requiredExclusions = buf.readInt();
@@ -145,7 +147,9 @@ public class ShowCategoryInPacket implements InPacket {
 				yield new ClientIconConfig.EffectIconConfig(Registries.STATUS_EFFECT.get(effect));
 			}
 			case ITEM -> {
-				var itemStack = ItemStack.PACKET_CODEC.decode(buf);
+				// Read optional item icon (may be empty)
+				var _hasIconItem = buf.readBoolean();
+				var itemStack = _hasIconItem ? ItemStack.PACKET_CODEC.decode(buf) : ItemStack.EMPTY;
 				yield new ClientIconConfig.ItemIconConfig(itemStack);
 			}
 			case TEXTURE -> {

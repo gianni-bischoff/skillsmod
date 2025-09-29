@@ -83,7 +83,12 @@ public record ShowCategoryOutPacket(CategoryConfig category, CategoryData catego
 		buf.writeFloat(definition.size());
 		buf.writeInt(definition.cost());
 		buf.writeInt(definition.requiredSkills());
-        ItemStack.PACKET_CODEC.encode(buf, definition.costItem().orElse(ItemStack.EMPTY));
+        // Allow empty cost item by writing a presence flag before the stack
+        var _costItem = definition.costItem();
+        buf.writeBoolean(!_costItem.isEmpty());
+        if (!_costItem.isEmpty()) {
+            ItemStack.PACKET_CODEC.encode(buf, _costItem);
+        }
 		buf.writeInt(definition.requiredPoints());
 		buf.writeInt(definition.requiredSpentPoints());
 		buf.writeInt(definition.requiredExclusions());
@@ -118,7 +123,12 @@ public record ShowCategoryOutPacket(CategoryConfig category, CategoryData catego
 			buf.writeIdentifier(Registries.STATUS_EFFECT.getId(effectIcon.effect()));
 		} else if (icon instanceof IconConfig.ItemIconConfig itemIcon) {
 			buf.writeEnumConstant(IconType.ITEM);
-			ItemStack.PACKET_CODEC.encode(buf, itemIcon.item());
+			// Allow empty item icons by writing a presence flag before the stack
+			var _iconItem = itemIcon.item();
+			buf.writeBoolean(!_iconItem.isEmpty());
+			if (!_iconItem.isEmpty()) {
+				ItemStack.PACKET_CODEC.encode(buf, _iconItem);
+			}
 		} else if (icon instanceof IconConfig.TextureIconConfig textureIcon) {
 			buf.writeEnumConstant(IconType.TEXTURE);
 			buf.writeIdentifier(textureIcon.texture());

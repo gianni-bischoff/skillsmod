@@ -36,7 +36,7 @@ public record SkillDefinitionConfig(
 		int requiredPoints,
 		int requiredSpentPoints,
 		int requiredExclusions,
-        Optional<ItemStack> costItem
+        ItemStack costItem
 ) {
 
 	public static Result<Optional<SkillDefinitionConfig>, Problem> parse(String id, JsonElement rootElement, ConfigContext context) {
@@ -100,10 +100,10 @@ public record SkillDefinitionConfig(
 		var cost = rootObject.get("cost")
 				.getSuccess() // ignore failure because this property is optional
 				.flatMap(element -> element.getAsInt()
-						.ifFailure(problems::add)
-						.getSuccess()
+					.ifFailure(problems::add)
+					.getSuccess()
 				)
-				.orElse(1);
+				.orElse(0);
 
 		var requiredSkills = rootObject.get("required_skills")
 				.getSuccess() // ignore failure because this property is optional
@@ -115,8 +115,8 @@ public record SkillDefinitionConfig(
 
         var costItem = rootObject.get("cost_item")
                 .andThen(BuiltinJson::parseItemStack)
-                .ifFailure(problems::add)
-                .getSuccess();
+                .getSuccess()
+                .orElse(ItemStack.EMPTY);
 
 		var requiredPoints = rootObject.get("required_points")
 				.getSuccess() // ignore failure because this property is optional

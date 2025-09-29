@@ -1,6 +1,7 @@
 package net.puffish.skillsmod;
 
 import com.mojang.brigadier.CommandDispatcher;
+import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.CommandManager;
@@ -320,8 +321,8 @@ public class SkillsMod {
 
                     var definition = definitionOpt.get();
 
-                    if(definition.costItem().isPresent()) {
-                        var costItem = definition.costItem().get();
+                    if(definition.costItem() != ItemStack.EMPTY) {
+                        var costItem = definition.costItem();
 
                         if(player.getInventory().contains(costItem)) {
                             player.getInventory().removeStack(player.getInventory().indexOf(costItem), costItem.getCount());
