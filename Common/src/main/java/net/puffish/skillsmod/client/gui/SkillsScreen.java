@@ -76,7 +76,6 @@ public class SkillsScreen extends Screen {
 
     private static final Vector4fc COLOR_WHITE = new Vector4f(1f, 1f, 1f, 1f);
     private static final Vector4fc COLOR_GRAY = new Vector4f(0.25f, 0.25f, 0.25f, 1f);
-    private static final Vector4fc COLOR_RED = new Vector4f(.5f, 0f, 0f, 1f);
 
 	private final ClientSkillScreenData data;
 
@@ -489,7 +488,7 @@ public class SkillsScreen extends Screen {
 		if (frame instanceof ClientFrameConfig.AdvancementFrameConfig advancementFrame) {
 			var guiAtlasManager = client.getGuiAtlasManager();
 			var status = switch (state) {
-				case LOCKED, EXCLUDED, AVAILABLE, AFFORDABLE, BLOCKED -> AdvancementObtainedStatus.UNOBTAINED;
+				case LOCKED, EXCLUDED, AVAILABLE, AFFORDABLE -> AdvancementObtainedStatus.UNOBTAINED;
 				case UNLOCKED -> AdvancementObtainedStatus.OBTAINED;
 			};
 			var texture = status.getFrameTexture(advancementFrame.frame());
@@ -498,7 +497,6 @@ public class SkillsScreen extends Screen {
 			var color = switch (state) {
 				case LOCKED, EXCLUDED -> COLOR_GRAY;
 				case AVAILABLE, AFFORDABLE, UNLOCKED -> COLOR_WHITE;
-                case BLOCKED -> COLOR_RED;
 			};
 			textureRenderer.emitSprite(
 					context, sprite, scaling,
@@ -507,18 +505,6 @@ public class SkillsScreen extends Screen {
 			);
 		} else if (frame instanceof ClientFrameConfig.TextureFrameConfig textureFrame) {
 			switch (state) {
-                case BLOCKED -> textureFrame.lockedTexture().ifPresentOrElse(
-                        lockedTexture -> textureRenderer.emitTexture(
-                                context, lockedTexture,
-                                x - halfSize, y - halfSize, size, size,
-                                COLOR_WHITE
-                        ),
-                        () -> textureRenderer.emitTexture(
-                                context, textureFrame.availableTexture(),
-                                x - halfSize, y - halfSize, size, size,
-                                COLOR_RED
-                        )
-                );
 				case LOCKED -> textureFrame.lockedTexture().ifPresentOrElse(
 						lockedTexture -> textureRenderer.emitTexture(
 								context, lockedTexture,

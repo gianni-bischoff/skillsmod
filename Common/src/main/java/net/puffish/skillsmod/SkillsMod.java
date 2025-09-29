@@ -1,6 +1,7 @@
 package net.puffish.skillsmod;
 
 import com.mojang.brigadier.CommandDispatcher;
+import net.minecraft.registry.Registries;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
@@ -312,12 +313,31 @@ public class SkillsMod {
 		getCategory(categoryId).ifPresent(category -> {
 			var categoryData = getPlayerData(player).getOrCreateCategoryData(category);
 			category.skills().getById(skillId).ifPresent(skill -> {
-				if (categoryData.canUnlockSkill(category, skill, force)) {
+                if (categoryData.canUnlockSkill(category, skill, force)) {
+                    var definitionOpt = category.definitions().getById(skill.definitionId());
+
+                    if(definitionOpt.isEmpty()) return;
+
+                    var definition = definitionOpt.get();
+
+                    if(definition.costItem().isPresent()) {
+                        var costItem = definition.costItem().get();
+
+                        if(player.getInventory().contains(costItem)) {
+                            player.getInventory().removeStack(player.getInventory().indexOf(costItem), costItem.getCount());
+                        } else {
+                            return;
+                        }
+                    }
+
 					watchNewPoints(player, category, categoryData, false, () -> {
 						categoryData.unlockSkill(skillId);
 						packetSender.send(player, new SkillUpdateOutPacket(categoryId, skillId, true));
 						syncPoints(player, category, categoryData);
 					});
+
+
+
 					SKILL_UNLOCK.invoker().onSkillUnlock(categoryId, skillId);
 					updateSkillRewards(player, category, categoryData, skill, true);
 				}

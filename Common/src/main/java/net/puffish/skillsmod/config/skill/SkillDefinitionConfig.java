@@ -1,6 +1,11 @@
 package net.puffish.skillsmod.config.skill;
 
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.registry.BuiltinRegistries;
+import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 import net.puffish.skillsmod.SkillsMod;
 import net.puffish.skillsmod.api.config.ConfigContext;
 import net.puffish.skillsmod.api.json.BuiltinJson;
@@ -31,7 +36,7 @@ public record SkillDefinitionConfig(
 		int requiredPoints,
 		int requiredSpentPoints,
 		int requiredExclusions,
-        Text requiredStages
+        Optional<ItemStack> costItem
 ) {
 
 	public static Result<Optional<SkillDefinitionConfig>, Problem> parse(String id, JsonElement rootElement, ConfigContext context) {
@@ -108,8 +113,8 @@ public record SkillDefinitionConfig(
 				)
 				.orElse(1);
 
-        var requiredStages = rootObject.get("required_stages")
-                .andThen(titleElement -> BuiltinJson.parseText(titleElement, context.getServer().getRegistryManager()))
+        var costItem = rootObject.get("cost_item")
+                .andThen(BuiltinJson::parseItemStack)
                 .ifFailure(problems::add)
                 .getSuccess();
 
@@ -169,7 +174,7 @@ public record SkillDefinitionConfig(
 					requiredPoints,
 					requiredSpentPoints,
 					requiredExclusions,
-                    requiredStages.orElseThrow()
+                    costItem
 			)));
 		} else {
 			return Result.failure(Problem.combine(problems));

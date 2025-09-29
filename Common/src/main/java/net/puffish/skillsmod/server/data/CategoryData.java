@@ -95,11 +95,6 @@ public class CategoryData {
 			return Skill.State.UNLOCKED;
 		}
 
-        if (!definition.requiredStages().getString().isBlank()) {
-
-			return Skill.State.BLOCKED;
-		}
-
 		if (category.connections()
 				.exclusive()
 				.getNeighborsFor(skill.id())

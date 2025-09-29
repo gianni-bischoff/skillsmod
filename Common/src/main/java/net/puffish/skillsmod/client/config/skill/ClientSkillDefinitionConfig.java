@@ -1,5 +1,6 @@
 package net.puffish.skillsmod.client.config.skill;
 
+import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.puffish.skillsmod.client.config.ClientFrameConfig;
 import net.puffish.skillsmod.client.config.ClientIconConfig;
@@ -14,7 +15,7 @@ public record ClientSkillDefinitionConfig(
 		float size,
 		int cost,
 		int requiredSkills,
-		Text requiredStages,
+		ItemStack cost_item,
 		int requiredPoints,
 		int requiredSpentPoints,
 		int requiredExclusions

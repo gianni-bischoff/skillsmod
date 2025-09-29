@@ -83,7 +83,7 @@ public record ShowCategoryOutPacket(CategoryConfig category, CategoryData catego
 		buf.writeFloat(definition.size());
 		buf.writeInt(definition.cost());
 		buf.writeInt(definition.requiredSkills());
-        TextCodecs.UNLIMITED_REGISTRY_PACKET_CODEC.encode(buf, definition.requiredStages());
+        ItemStack.PACKET_CODEC.encode(buf, definition.costItem().orElse(ItemStack.EMPTY));
 		buf.writeInt(definition.requiredPoints());
 		buf.writeInt(definition.requiredSpentPoints());
 		buf.writeInt(definition.requiredExclusions());

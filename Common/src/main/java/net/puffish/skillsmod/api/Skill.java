@@ -14,7 +14,6 @@ public interface Skill {
 	void lock(ServerPlayerEntity player);
 
 	enum State {
-        BLOCKED,
 		LOCKED,
 		AVAILABLE,
 		AFFORDABLE,
